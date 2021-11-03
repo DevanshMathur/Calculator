@@ -10,14 +10,12 @@ class Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ElevatedButton(
+    return ElevatedButton(
         onPressed: () => callback(buttonName),
         child: Text(
           AppUtils.getButtonText(buttonName),
-          style: const TextStyle(fontSize: 30),
+          style: const TextStyle(fontSize: 20),
         ),
-      ),
     );
   }
 }

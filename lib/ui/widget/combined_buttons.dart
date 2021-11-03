@@ -5,17 +5,21 @@ import 'butons.dart';
 
 class CombinedButtons extends StatelessWidget {
   final Function operation;
+
   const CombinedButtons(this.operation, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: GridView.count(
+      padding: const EdgeInsets.all(3.0),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.69,
+        child: GridView.count(
           shrinkWrap: true,
+          clipBehavior: ,
           crossAxisCount: 4,
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 2.0,
+          crossAxisSpacing: 2.0,
           children: [
             Buttons(ButtonNameEnum.allClear, operation),
             Buttons(ButtonNameEnum.clear, operation),
@@ -38,6 +42,7 @@ class CombinedButtons extends StatelessWidget {
             Buttons(ButtonNameEnum.decimal, operation),
             Buttons(ButtonNameEnum.equal, operation),
           ],
+        ),
       ),
     );
   }

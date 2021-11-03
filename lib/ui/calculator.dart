@@ -33,33 +33,26 @@ class _CalculatorState extends State<Calculator> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  expression,
-                  style: const TextStyle(fontSize: 30),
-                ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                expression,
+                softWrap: true,
+                style: const TextStyle(fontSize: 30),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: showResult
-                    ? Text(
-                        result,
-                        style: const TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
-                      )
-                    : Container(),
-              ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: showResult
+                  ? Text(
+                      result,
+                      softWrap: true,
+                      style: const TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold),
+                    )
+                  : Container(),
             ),
-            Expanded(
-              flex: 8,
-              child: CombinedButtons(operation),
-            ),
+            CombinedButtons(operation),
           ],
         ),
       ),
@@ -84,7 +77,8 @@ class _CalculatorState extends State<Calculator> {
         }
       } else if (expression.isNotEmpty) {
         showResult = true;
-        if (num.tryParse(expression[expression.length - 1]) == null) {
+        if (num.tryParse(expression[expression.length - 1]) == null &&
+            buttonName != ButtonNameEnum.clear) {
           expression = expression.substring(0, expression.length - 1);
         }
         switch (buttonName) {
@@ -102,7 +96,36 @@ class _CalculatorState extends State<Calculator> {
             isDouble = true;
             break;
           case ButtonNameEnum.percentage:
-            expression += "%";
+            int ind = 0;
+            for (var i in expression.split("")) {
+              if (['+', '-', '*', '/'].contains(i)) {
+                ind = expression.lastIndexOf(i);
+              }
+            }
+
+            String exp1 = expression.substring(0, ind);
+            String exp2 = expression.substring(ind, ind + 1);
+            String exp3 = expression.substring(ind + 1);
+
+            String val1 = Parser()
+                .parse(exp1)
+                .evaluate(EvaluationType.REAL, ContextModel())
+                .toString();
+
+            var val2 = double.parse(exp3.split('%')[0]) / 100;
+
+            expression = exp1 + exp2;
+            if (exp2 == '*' || exp2 == '/') {
+              expression += val2.toString();
+            }
+            if (exp2 == '+' || exp2 == '-') {
+              var val3 = val2 * double.parse(val1);
+              expression += val3.toString();
+            }
+            result = Parser()
+                .parse(expression)
+                .evaluate(EvaluationType.REAL, ContextModel())
+                .toString();
             isDouble = true;
             break;
           case ButtonNameEnum.equal:
